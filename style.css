@@ -1,0 +1,45 @@
+			#wrapper{
+				width: 700px;
+				margin: auto;
+				margin-top: 40px;
+			}
+			table{
+				width: 100%;
+				text-align: center;
+				background-color: #3D3D29;
+				color: #f60;
+				font-weight: bold;
+				font-size: 1.1em;
+			}
+			td{
+				width: 60px;
+				height: 60px;
+			}
+			button{
+				border: none;
+				border-radius: 2px;
+				color: white;
+				background-color: #0066FF;
+			}
+			#user-input{
+				text-align: center;
+				vertical-align: middle;
+			}
+			#abs-msg-area{
+				width: 100%;
+				position: absolute;
+				top: 0;
+				left: 0;
+				color: white;
+				background-color: red;
+				vertical-align: middle;
+				font-family: sans-serif;
+				font-size: 1.2em;
+				text-align: center;
+				opacity: 0.0;
+				-moz-transition: opacity 1s;
+				-o-transition: opacity 1s;
+				-webkit-transition: opacity 1s;
+				-ms-transition: opacity 1s;
+				transition: opacity 1s;
+			}

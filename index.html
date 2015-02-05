@@ -3,59 +3,8 @@
 <head>
 	<title>BT JS!</title>
 	<meta charset="utf-8">
-	<style type="text/css">
-		#wrapper{
-			width: 700px;
-			margin: auto;
-			margin-top: 100px;
-		}
-		table{
-			width: 100%;
-			text-align: center;
-			background-color: #3D3D29;
-			color: #f60;
-			font-weight: bold;
-			font-size: 1.5em;
-		}
-		td{
-			width: 70px;
-			height: 70px;
-		}
-		input{
-			border: 1px solid #0066FF;
-			width: 300px;
-			height: 25px;
-			font-size: 1.2em;
-		}
-		button{
-			border: none;
-			border-radius: 2px;
-			color: white;
-			width: 100px;
-			height: 25px;
-			background-color: #0066FF;
-		}
-		#user-input{
-			margin: 20px;
-			text-align: center;
-			vertical-align: middle;
-		}
-		#abs-msg-area{
-			width: 100%;
-			position: absolute;
-			top: 0;
-			left: 0;
-			height: 40px;
-			color: white;
-			background-color: red;
-			vertical-align: middle;
-			font-family: sans-serif;
-			font-size: 1.2em;
-			text-align: center;
-			padding-top: 10px;
-			display: none;
-		}
-	</style>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script type="text/javascript" src="app.js"></script>
 </head>
 <body>
 	<div id="abs-msg-area"></div>
@@ -132,7 +81,11 @@
 				<td id="G6"></td>
 			</tr>
 			<tr>
-				<td></td>
+				<td>
+					<div id="user-input">
+						<input type="text" size="2" id="location" title="Введите букву строки и номер столбца."><br>
+					</div>
+				</td>
 				<td>0</td>
 				<td>1</td>
 				<td>2</td>
@@ -142,62 +95,6 @@
 				<td>6</td>
 			</tr>
 		</table>
-		<div id="user-input">
-			<input type="text" required title="Введите букву строки и номер столбца.">
-			<button>fire</button>
-		</div>
 	</div>
 </body>
-	<script type="text/javascript">
-		//mvc 
-		var view = {
-			displayMsg: function (msg, type){
-				var area = document.getElementById("abs-msg-area");
-				area.innerHTML = msg;
-				if (type == "success") {
-					area.style.background = "#00CC00";
-				}
-				if (type == "error"){
-					area.style.background = "#FF0000";
-				} 
-				area.style.display = "block";
-			},
-			displayHit: function  (location) {
-				var hitPlace = document.getElementById(location);
-				hitPlace.innerHTML = "HIT";
-				hitPlace.style.background = "#00CC00";
-			},
-			displayMiss: function  (location) {
-				var hitPlace = document.getElementById(location);
-				hitPlace.innerHTML = "MISS";
-				hitPlace.style.background = "#FF0000";
-			}
-		};
-
-		var model = {
-			boardSize: 7,
-			numShips: 3,
-			shipLength: 3,
-			shipsSunk: 3,
-			ships: [
-						{locations: ["A6", "B6", "C6"], hits: ["", "", ""]},
-						{locations: ["C4", "D4", "E4"], hits: ["", "", ""]},
-						{locations: ["A0", "A1", "A2"], hits: ["", "", ""]},
-					],
-			fire: function  (guess) {
-				for (var i = 0; i < this.numShips; i++) {
-					var ship = this.ships[i];
-					var index = ship.locations.indexOf(guess);
-					if (index > 0) {
-						//got a hit!
-					}
-				}
-			}
-				
-		};
-	    view.displayHit("A0");
-	    view.displayMsg("You hit the ship!", "success");
-	    view.displayMiss("G5");
-	    view.displayMsg("You miss (.", "error");
-	</script>
 </html>
