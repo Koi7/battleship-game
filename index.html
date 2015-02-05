@@ -1,0 +1,203 @@
+<!doctype html>
+<html>
+<head>
+	<title>BT JS!</title>
+	<meta charset="utf-8">
+	<style type="text/css">
+		#wrapper{
+			width: 700px;
+			margin: auto;
+			margin-top: 100px;
+		}
+		table{
+			width: 100%;
+			text-align: center;
+			background-color: #3D3D29;
+			color: #f60;
+			font-weight: bold;
+			font-size: 1.5em;
+		}
+		td{
+			width: 70px;
+			height: 70px;
+		}
+		input{
+			border: 1px solid #0066FF;
+			width: 300px;
+			height: 25px;
+			font-size: 1.2em;
+		}
+		button{
+			border: none;
+			border-radius: 2px;
+			color: white;
+			width: 100px;
+			height: 25px;
+			background-color: #0066FF;
+		}
+		#user-input{
+			margin: 20px;
+			text-align: center;
+			vertical-align: middle;
+		}
+		#abs-msg-area{
+			width: 100%;
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 40px;
+			color: white;
+			background-color: red;
+			vertical-align: middle;
+			font-family: sans-serif;
+			font-size: 1.2em;
+			text-align: center;
+			padding-top: 10px;
+			display: none;
+		}
+	</style>
+</head>
+<body>
+	<div id="abs-msg-area"></div>
+	<div id="wrapper">
+		<table border="1px">
+			<tr>
+				<td>A</td>
+				<td id="A0"></td>
+				<td id="A1"></td>
+				<td id="A2"></td>
+				<td id="A3"></td>
+				<td id="A4"></td>
+				<td id="A5"></td>
+				<td id="A6"></td>
+			</tr>
+			<tr>
+				<td>B</td>
+				<td id="B0"></td>
+				<td id="B1"></td>
+				<td id="B2"></td>
+				<td id="B3"></td>
+				<td id="B4"></td>
+				<td id="B5"></td>
+				<td id="B6"></td>
+			</tr>
+			<tr>
+				<td>C</td>
+				<td id="C0"></td>
+				<td id="C1"></td>
+				<td id="C2"></td>
+				<td id="C3"></td>
+				<td id="C4"></td>
+				<td id="C5"></td>
+				<td id="C6"></td>
+			</tr>
+			<tr>
+				<td>D</td>
+				<td id="D0"></td>
+				<td id="D1"></td>
+				<td id="D2"></td>
+				<td id="D3"></td>
+				<td id="D4"></td>
+				<td id="D5"></td>
+				<td id="D6"></td>
+			</tr>
+			<tr>
+				<td>E</td>
+				<td id="E0"></td>
+				<td id="E1"></td>
+				<td id="E2"></td>
+				<td id="E3"></td>
+				<td id="E4"></td>
+				<td id="E5"></td>
+				<td id="E6"></td>
+			</tr>
+			<tr>
+				<td>F</td>
+				<td id="F0"></td>
+				<td id="F1"></td>
+				<td id="F2"></td>
+				<td id="F3"></td>
+				<td id="F4"></td>
+				<td id="F5"></td>
+				<td id="F6"></td>
+			</tr>
+			<tr>
+				<td>G</td>
+				<td id="G0"></td>
+				<td id="G1"></td>
+				<td id="G2"></td>
+				<td id="G3"></td>
+				<td id="G4"></td>
+				<td id="G5"></td>
+				<td id="G6"></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td>0</td>
+				<td>1</td>
+				<td>2</td>
+				<td>3</td>
+				<td>4</td>
+				<td>5</td>
+				<td>6</td>
+			</tr>
+		</table>
+		<div id="user-input">
+			<input type="text" required title="Введите букву строки и номер столбца.">
+			<button>fire</button>
+		</div>
+	</div>
+</body>
+	<script type="text/javascript">
+		//mvc 
+		var view = {
+			displayMsg: function (msg, type){
+				var area = document.getElementById("abs-msg-area");
+				area.innerHTML = msg;
+				if (type == "success") {
+					area.style.background = "#00CC00";
+				}
+				if (type == "error"){
+					area.style.background = "#FF0000";
+				} 
+				area.style.display = "block";
+			},
+			displayHit: function  (location) {
+				var hitPlace = document.getElementById(location);
+				hitPlace.innerHTML = "HIT";
+				hitPlace.style.background = "#00CC00";
+			},
+			displayMiss: function  (location) {
+				var hitPlace = document.getElementById(location);
+				hitPlace.innerHTML = "MISS";
+				hitPlace.style.background = "#FF0000";
+			}
+		};
+
+		var model = {
+			boardSize: 7,
+			numShips: 3,
+			shipLength: 3,
+			shipsSunk: 3,
+			ships: [
+						{locations: ["A6", "B6", "C6"], hits: ["", "", ""]},
+						{locations: ["C4", "D4", "E4"], hits: ["", "", ""]},
+						{locations: ["A0", "A1", "A2"], hits: ["", "", ""]},
+					],
+			fire: function  (guess) {
+				for (var i = 0; i < this.numShips; i++) {
+					var ship = this.ships[i];
+					var index = ship.locations.indexOf(guess);
+					if (index > 0) {
+						//got a hit!
+					}
+				}
+			}
+				
+		};
+	    view.displayHit("A0");
+	    view.displayMsg("You hit the ship!", "success");
+	    view.displayMiss("G5");
+	    view.displayMsg("You miss (.", "error");
+	</script>
+</html>
