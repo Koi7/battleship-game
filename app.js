@@ -5,14 +5,23 @@
 				shipLength: 3,
 				shipsSunk: 0,
 				guesses:0,
+				start: function () {
+					this.reset();
+					this.clearBoard();
+					this.setShips();
+					this.isPlaying = true;
+					this.updateView(4);
+				},
+				isPlaying: false,
 				updateView: function (updateCode, location){
 					switch(updateCode){
 						case -1: view.displayMiss(location); view.displayMsg("MISS", "error", 1000); break;//MISS
 						case  0: view.displayMsg("Place you are hit was alredy been hit", "error", 1000); break;//REPEAT HIT
 						case  1: view.displayHit(location); view.displayMsg("HIT", "success", 1000); break;//HIT
 						case  2: view.displayHit(location); view.displayMsg("You sunk the battle ship!", "success", 1000); break;//SUNK BATTLE SHIP
-						case  3: view.displayHit(location); view.displayMsg("You won the game with rate: ", "success", 1000); break;//GAME OVER
+						case  3: view.displayHit(location); view.displayMsg("You won the game with rate: " + this.getRate(), "success", 1000); break;//GAME OVER
 						case  4: view.displayMsg("Game started", "success", 1000); break;//GAME STARTED
+						case  5: view.markSunkBattleship(location); break;
 					}
 				},
 				convertNumberToCharacter: function (num) {
@@ -63,7 +72,16 @@
 						this.setShip(this.ships[2]);
 					}
 					while (this.hasEqualLocations(this.ships[0], this.ships[1], this.ships[2]));
-					this.updateView(4);
+				},
+				clearBoard: function () {
+					var boardItems = document.getElementsByTagName("td");
+					for (var i = 0; i < boardItems.length; i++) {
+						var id = boardItems[i].getAttribute("id");
+						if (id) {
+							boardItems[i].innerHTML = "";
+							boardItems[i].style.background = "#3D3D29";
+						}
+					}
 				},
 				ships: [
 							{locations: ["", "", ""], hits: ["", "", ""]},
@@ -87,11 +105,18 @@
 							}
 							if (this.isSunk(ship)) {
 								this.updateView(2, guess);
+								this.updateView(5, ship.locations);
 								this.shipsSunk++;
 							}
 							if (this.shipsSunk == this.numShips) {
 								this.updateView(3, guess);
-								//this.reset();
+								this.isPlaying  = false;
+								setTimeout(function () {
+									var wantPlayAgain = confirm("Do you wanna play again?");
+									if (wantPlayAgain) {
+										this.start();
+									}
+								}, 2000);
 							}
 							return;
 						}
@@ -117,7 +142,6 @@
 					for (var i = 0; i < this.ships.length; i++) {
 						this.resetShip(this.ships[i]);
 					}
-					this.setShips();
 				}				
 			};
 			var view = {
@@ -142,13 +166,19 @@
 				displayMiss: function  (location) {
 					var hitPlace = document.getElementById(location);
 					hitPlace.innerHTML = "MISS";
-				}
+				},
+				markSunkBattleship: function (location){
+					document.getElementById(location[0]).style.background = "red";
+					document.getElementById(location[1]).style.background = "red";
+					document.getElementById(location[2]).style.background = "red";
+				} 
 			};
 			var controller = {
 				setController: function (event) {
 					var e = event || window.event;
 					if (e.keyCode === 13){
 						var input = document.getElementById("location").value;
+						document.getElementById("location").value = "";
 						var location = this.validInput(input);
 						if (location) {
 							this.processInput(location);
@@ -177,7 +207,13 @@
 					model.fire(location);
 				},
 				init: function () {
-					model.setShips();
+					if (model.isPlaying) {
+						if(confirm("Do you really wanna start a new game?")){
+							model.start();
+						}
+						return;
+					}
+					model.start();
 				}
 			}
 			window.onload = function () {
