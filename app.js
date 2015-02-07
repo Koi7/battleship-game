@@ -127,9 +127,9 @@
 					return rate + " perfect";
 				},
 				resetGame: function () {
-					debugger;
 					this.hits = 0;
 					this.guesses = 0;
+					this.shipsSunk = 0;
 					for (var i = 0; i < this.ships.length; i++) {
 						this.resetShip(this.ships[i]);
 					}
