@@ -6,7 +6,7 @@
 				shipsSunk: 0,
 				guesses:0,
 				start: function () {
-					this.reset();
+					this.resetGame();
 					this.updateView(6);
 					this.setShips();
 					this.isPlaying = true;
@@ -80,7 +80,6 @@
 						],
 				fire: function  (guess) {
 					this.guesses++;
-					debugger;
 					for (var i = 0; i < this.numShips; i++) {
 						var ship = this.ships[i];
 						var index = ship.locations.indexOf(guess);
@@ -112,8 +111,9 @@
 					return ship.hits[0] == "hit" && ship.hits[1] == "hit" && ship.hits[2] == "hit";
 				},
 				resetShip: function (ship) {
-					for (var i = 0; i < ship.hits; i++) {
-						ship.hits[i] = ship.locations[i] = "";
+					for (var i = 0; i < ship.hits.length; i++) {
+						ship.hits[i] = "";
+						ship.locations[i] = "";
 					}
 				},
 				getRate: function () {
@@ -126,7 +126,8 @@
 					}
 					return rate + " perfect";
 				},
-				reset: function () {
+				resetGame: function () {
+					debugger;
 					this.hits = 0;
 					this.guesses = 0;
 					for (var i = 0; i < this.ships.length; i++) {
