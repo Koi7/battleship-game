@@ -43,3 +43,10 @@
 				-ms-transition: opacity 1s;
 				transition: opacity 1s;
 			}
+			.fireable:hover{
+				cursor: crosshair;
+				background-color: red;
+			}
+			.sunk{
+				background-color: red;
+			}

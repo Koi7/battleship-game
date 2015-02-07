@@ -7,7 +7,7 @@
 				guesses:0,
 				start: function () {
 					this.reset();
-					this.clearBoard();
+					this.updateView(6);
 					this.setShips();
 					this.isPlaying = true;
 					this.updateView(4);
@@ -16,12 +16,12 @@
 				updateView: function (updateCode, location){
 					switch(updateCode){
 						case -1: view.displayMiss(location); view.displayMsg("MISS", "error", 1000); break;//MISS
-						case  0: view.displayMsg("Place you are hit was alredy been hit", "error", 1000); break;//REPEAT HIT
+						case  0: view.displayMsg("Repeat yourself", "error", 1000); break;//REPEAT HIT
 						case  1: view.displayHit(location); view.displayMsg("HIT", "success", 1000); break;//HIT
 						case  2: view.displayHit(location); view.displayMsg("You sunk the battle ship!", "success", 1000); break;//SUNK BATTLE SHIP
-						case  3: view.displayHit(location); view.displayMsg("You won the game with rate: " + this.getRate(), "success", 1000); break;//GAME OVER
 						case  4: view.displayMsg("Game started", "success", 1000); break;//GAME STARTED
 						case  5: view.markSunkBattleship(location); break;
+						case  6: view.clearBoard(); break;
 					}
 				},
 				convertNumberToCharacter: function (num) {
@@ -73,16 +73,6 @@
 					}
 					while (this.hasEqualLocations(this.ships[0], this.ships[1], this.ships[2]));
 				},
-				clearBoard: function () {
-					var boardItems = document.getElementsByTagName("td");
-					for (var i = 0; i < boardItems.length; i++) {
-						var id = boardItems[i].getAttribute("id");
-						if (id) {
-							boardItems[i].innerHTML = "";
-							boardItems[i].style.background = "#3D3D29";
-						}
-					}
-				},
 				ships: [
 							{locations: ["", "", ""], hits: ["", "", ""]},
 							{locations: ["", "", ""], hits: ["", "", ""]},
@@ -90,33 +80,26 @@
 						],
 				fire: function  (guess) {
 					this.guesses++;
+					debugger;
 					for (var i = 0; i < this.numShips; i++) {
 						var ship = this.ships[i];
 						var index = ship.locations.indexOf(guess);
 						if (index >= 0) {
 							//got a hit
-							if (ship.hits[index] == "") {
-								this.updateView(1,guess);
-								this.hits++;
-								ship.hits[index] = "hit";
-							}
-							else{
-								this.updateView(0, guess);
-							}
+							this.updateView(1,guess);
+							this.hits++;
+							ship.hits[index] = "hit";
 							if (this.isSunk(ship)) {
 								this.updateView(2, guess);
 								this.updateView(5, ship.locations);
 								this.shipsSunk++;
 							}
 							if (this.shipsSunk == this.numShips) {
-								this.updateView(3, guess);
 								this.isPlaying  = false;
-								setTimeout(function () {
-									var wantPlayAgain = confirm("Do you wanna play again?");
-									if (wantPlayAgain) {
-										this.start();
-									}
-								}, 2000);
+								var wantPlayAgain = confirm("You won the game with rate: "  + this.getRate() + "\n" + "      Do you wanna play again?");
+								if (wantPlayAgain) {
+									this.start();
+								}
 							}
 							return;
 						}
@@ -134,7 +117,14 @@
 					}
 				},
 				getRate: function () {
-					return ((this.numShips * 3) / this.guesses).toFixed(1);
+					var rate = ((this.numShips * 3) / this.guesses).toFixed(1);
+					if (rate < 0.5) {
+						return rate + " bad";
+					}
+					if (rate > 0.5 && rate < 0.8) {
+						return rate + " newby";
+					}
+					return rate + " perfect";
 				},
 				reset: function () {
 					this.hits = 0;
@@ -168,47 +158,41 @@
 					hitPlace.innerHTML = "MISS";
 				},
 				markSunkBattleship: function (location){
-					document.getElementById(location[0]).style.background = "red";
-					document.getElementById(location[1]).style.background = "red";
-					document.getElementById(location[2]).style.background = "red";
-				} 
+					document.getElementById(location[0]).setAttribute("class", "sunk");
+					document.getElementById(location[1]).setAttribute("class", "sunk");
+					document.getElementById(location[2]).setAttribute("class", "sunk");;
+				},
+				clearBoard: function () {
+					var boardItems = document.getElementsByTagName("td");
+					for (var i = 0; i < boardItems.length; i++) {
+						var id = boardItems[i].getAttribute("id");
+						if (id) {
+							boardItems[i].innerHTML = "";
+							boardItems[i].setAttribute("class", "fireable");
+						}
+					}
+				}
 			};
 			var controller = {
-				setController: function (event) {
-					var e = event || window.event;
-					if (e.keyCode === 13){
-						var input = document.getElementById("location").value;
-						document.getElementById("location").value = "";
-						var location = this.validInput(input);
-						if (location) {
-							this.processInput(location);
+				setSettings: function () {
+					var boardItems = document.getElementsByTagName("td");
+					for (var i = 0; i < boardItems.length; i++) {
+						if (boardItems[i].getAttribute("id")) {
+							boardItems[i].onclick = handleClick;
 						}
 					}
 				},
-				validInput: function (location) {
-					var location = location.toUpperCase();
-					var alpha = ["A", "B", "C", "D", "E", "F", "G"];
-					if (location == null || location.length != 2) {
-						view.displayMsg("Invalid input", "error");
-						return false;
+				processInput: function (target) {
+					if (!target.innerHTML){
+						model.fire(target.getAttribute("id"));
 					}
-					var index = alpha.indexOf(location[0]);
-					if (index < 0) {
-						view.displayMsg("Invalid input: there is no such row", "error");
-						return false;
-					}
-					if ((location[1] < 0) || (location[1] >= model.boardSize)) {
-						view.displayMsg("Invalid input: there is no such column", "error");
-						return false;
-					}
-					return location[0] + location[1];
+					else{
+						model.updateView(0);
+					}					
 				},
-				processInput: function (location) {
-					model.fire(location);
-				},
-				init: function () {
+				init: function (){
 					if (model.isPlaying) {
-						if(confirm("Do you really wanna start a new game?")){
+						if (confirm("Do you really wanna start a new game?")) {
 							model.start();
 						}
 						return;
@@ -216,10 +200,13 @@
 					model.start();
 				}
 			}
+			function handleClick (e) {
+				var event = e || window.event;
+				var target = event.target || event.srcElement;
+				controller.processInput(target);
+			}
 			window.onload = function () {
-				document.getElementById("location").onkeypress = function (e) {
-					controller.setController(e);
-				};
+				controller.setSettings();
 				controller.init();
 			}
 			
