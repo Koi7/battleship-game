@@ -1,0 +1,1 @@
+### Classic Battleship game written on pure JS using MVC pattern. [Try it!](http://koi7.github.io/battleship-game/)
